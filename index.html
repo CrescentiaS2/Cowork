@@ -1,1 +1,237 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ร้านค้าออนไลน์</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    header {
+      background: #ff6b35;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .product {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .product img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .product h3 {
+      margin: 12px 0 5px;
+    }
+
+    .price {
+      color: #ff6b35;
+      font-size: 20px;
+      font-weight: bold;
+      margin: 10px;
+    }
+
+    button {
+      background: #ff6b35;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #e85a28;
+    }
+
+    .cart {
+      background: white;
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    #cartItems {
+      margin: 15px 0;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+
+    .total {
+      font-size: 22px;
+      font-weight: bold;
+      text-align: right;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🛒 ร้านค้าออนไลน์</h1>
+    <p>สินค้าคุณภาพ ราคาถูก</p>
+  </header>
+
+  <div class="container">
+
+    <h2>สินค้า</h2>
+
+    <div class="products">
+
+      <div class="product">
+        <img src="https://picsum.photos/400/300?random=1" alt="เสื้อยืด">
+        <h3>เสื้อยืดแฟชั่น</h3>
+        <div class="price">฿299</div>
+        <button onclick="addToCart('เสื้อยืดแฟชั่น', 299)">
+          เพิ่มลงตะกร้า
+        </button>
+      </div>
+
+      <div class="product">
+        <img src="https://picsum.photos/400/300?random=2" alt="รองเท้า">
+        <h3>รองเท้าผ้าใบ</h3>
+        <div class="price">฿599</div>
+        <button onclick="addToCart('รองเท้าผ้าใบ', 599)">
+          เพิ่มลงตะกร้า
+        </button>
+      </div>
+
+      <div class="product">
+        <img src="https://picsum.photos/400/300?random=3" alt="กระเป๋า">
+        <h3>กระเป๋าสะพาย</h3>
+        <div class="price">฿399</div>
+        <button onclick="addToCart('กระเป๋าสะพาย', 399)">
+          เพิ่มลงตะกร้า
+        </button>
+      </div>
+
+      <div class="product">
+        <img src="https://picsum.photos/400/300?random=4" alt="หูฟัง">
+        <h3>หูฟังไร้สาย</h3>
+        <div class="price">฿799</div>
+        <button onclick="addToCart('หูฟังไร้สาย', 799)">
+          เพิ่มลงตะกร้า
+        </button>
+      </div>
+
+    </div>
+
+    <div class="cart">
+      <h2>🛒 ตะกร้าสินค้า</h2>
+
+      <div id="cartItems">
+        ยังไม่มีสินค้า
+      </div>
+
+      <div class="total">
+        รวม: ฿<span id="total">0</span>
+      </div>
+
+      <button onclick="checkout()" style="margin-top:15px; width:100%;">
+        สั่งซื้อสินค้า
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    let cart = [];
+
+    function addToCart(name, price) {
+      cart.push({
+        name: name,
+        price: price
+      });
+
+      showCart();
+    }
+
+    function showCart() {
+      const cartItems = document.getElementById("cartItems");
+      const totalElement = document.getElementById("total");
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = "ยังไม่มีสินค้า";
+        totalElement.textContent = "0";
+        return;
+      }
+
+      cartItems.innerHTML = "";
+
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        total += item.price;
+
+        cartItems.innerHTML += `
+          <div class="cart-item">
+            <span>${item.name}</span>
+            <span>
+              ฿${item.price}
+              <button onclick="removeItem(${index})">
+                ลบ
+              </button>
+            </span>
+          </div>
+        `;
+      });
+
+      totalElement.textContent = total.toLocaleString();
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      showCart();
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert("กรุณาเลือกสินค้าก่อนสั่งซื้อ");
+        return;
+      }
+
+      alert("ขอบคุณสำหรับการสั่งซื้อ! 🎉");
+    }
+  </script>
+
+</body>
+</html>
