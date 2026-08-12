@@ -1,93 +1,184 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="th">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Visual Dashboard</title>
-<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-<style>
-body{font-family:Inter,Arial,sans-serif;background:#f5f7fb;margin:0;color:#172033}
-.container{max-width:1200px;margin:auto;padding:32px}
-h1{margin-bottom:6px}
-.subtitle{color:#667085;margin-bottom:24px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.card{background:white;border-radius:16px;padding:18px;box-shadow:0 5px 20px rgba(20,30,50,.07)}
-.full{grid-column:1/-1}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
-.kpi{background:white;border-radius:14px;padding:18px}
-.kpi .num{font-size:28px;font-weight:700}
-.kpi .label{color:#667085;font-size:13px;margin-top:5px}
-@media(max-width:800px){.grid,.kpis{grid-template-columns:1fr}}
-.note{background:#eef4ff;border-left:4px solid #4f7cff;padding:12px 14px;border-radius:8px;margin:18px 0}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scopus Publication EDA Dashboard 2025</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-<div class="container">
-<h1>300 Records</h1>
-<div class="subtitle">Exploratory Data Analysis จากข้อมูล Scopus จำนวน 300 records</div>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen p-6">
 
-<div class="kpis">
-<div class="kpi"><div class="num">300</div><div class="label">Publications</div></div>
-<div class="kpi"><div class="num">315</div><div class="label">Total citations</div></div>
-<div class="kpi"><div class="num">1.05</div><div class="label">Average citations / paper</div></div>
-<div class="kpi"><div class="num">23</div><div class="label">Maximum citations</div></div>
-</div>
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <header class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Scopus Research Insights (2025 Dataset)</h1>
+                <p class="text-sm text-slate-500 mt-1">Exploratory Data Analysis & Visualizations from 300 Academic Records</p>
+            </div>
+            <span class="px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full border border-indigo-100">
+                Total Records: 300
+            </span>
+        </header>
 
-<div class="grid">
-<div class="card">
-<h3>1. Document Type Distribution</h3>
-<div id="doc"></div>
-</div>
+        <!-- Stat Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Publications</p>
+                <p class="text-2xl font-bold text-slate-800 mt-1">300</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Research Articles</p>
+                <p class="text-2xl font-bold text-indigo-600 mt-1">211 <span class="text-xs text-slate-400 font-normal">(70.3%)</span></p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Open Access</p>
+                <p class="text-2xl font-bold text-emerald-600 mt-1">128 <span class="text-xs text-slate-400 font-normal">(42.7%)</span></p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Max Citations</p>
+                <p class="text-2xl font-bold text-amber-500 mt-1">34 <span class="text-xs text-slate-400 font-normal">Citations</span></p>
+            </div>
+        </div>
 
-<div class="card">
-<h3>2. Top 10 Publication Sources</h3>
-<div id="sources"></div>
-</div>
+        <!-- Charts Grid (Examples 1, 2, 3) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Example 1: Document Types -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                <h2 class="text-base font-bold text-slate-800 mb-4">1. Document Type Breakdown</h2>
+                <div class="relative w-full h-64 flex items-center justify-center">
+                    <canvas id="docTypeChart"></canvas>
+                </div>
+            </div>
 
-<div class="card full">
-<h3>3. Citation Distribution & Top Cited Papers</h3>
-<div id="citation"></div>
-</div>
+            <!-- Example 2: Access Status -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                <h2 class="text-base font-bold text-slate-800 mb-4">2. Open Access vs Closed Access</h2>
+                <div class="relative w-full h-64 flex items-center justify-center">
+                    <canvas id="accessChart"></canvas>
+                </div>
+            </div>
 
-<div class="card full">
-<h3>4. Top Author Keywords (normalized)</h3>
-<div id="keywords"></div>
-</div>
-</div>
-</div>
+            <!-- Example 3: Top Venues -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                <h2 class="text-base font-bold text-slate-800 mb-4">3. Top 5 Publication Venues</h2>
+                <div class="relative w-full h-64">
+                    <canvas id="sourcesChart"></canvas>
+                </div>
+            </div>
 
-<script>
-const docLabels = ["Article", "Conference paper"];
-const docValues = [261, 39];
+        </div>
 
-Plotly.newPlot('doc', [{
-  labels: docLabels, values: docValues, type:'pie', hole:.48,
-  textinfo:'label+percent', hovertemplate:'%{label}<br>%{value} papers<extra></extra>'
-}], {margin:{t:10,b:10,l:10,r:10}, height:360});
+        <!-- Example 4: Top Cited Table -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h2 class="text-base font-bold text-slate-800 mb-4">4. Top Cited Academic Papers</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-slate-400 font-medium">
+                            <th class="py-3 px-4">Title</th>
+                            <th class="py-3 px-4">Authors</th>
+                            <th class="py-3 px-4">Source Title</th>
+                            <th class="py-3 px-4 text-center">Citations</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-4 font-medium text-slate-900">A novel fractal fractional mathematical model for HIV/AIDS transmission...</td>
+                            <td class="py-3 px-4">Khan M. et al.</td>
+                            <td class="py-3 px-4">Scientific Reports</td>
+                            <td class="py-3 px-4 text-center"><span class="px-2 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-xs">34</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-4 font-medium text-slate-900">Precision in wave propagation and bifurcation analysis: advanced symbolic techniques...</td>
+                            <td class="py-3 px-4">Khater M.M.A.</td>
+                            <td class="py-3 px-4">Nonlinear Dynamics</td>
+                            <td class="py-3 px-4 text-center"><span class="px-2 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-xs">29</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-4 font-medium text-slate-900">Modeling the viscoelastic behavior of a FG nonlocal beam with deformable boundaries...</td>
+                            <td class="py-3 px-4">Tariq A. et al.</td>
+                            <td class="py-3 px-4">Archive of Applied Mechanics</td>
+                            <td class="py-3 px-4 text-center"><span class="px-2 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-xs">21</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-4 font-medium text-slate-900">ALYMPICS: LLM Agents Meet Game Theory</td>
+                            <td class="py-3 px-4">Mao S. et al.</td>
+                            <td class="py-3 px-4">COLING Proceedings</td>
+                            <td class="py-3 px-4 text-center"><span class="px-2 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-xs">15</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-4 font-medium text-slate-900">Bifurcation, chaos, and soliton dynamics in the integrable space curve model...</td>
+                            <td class="py-3 px-4">Tipu G.H. et al.</td>
+                            <td class="py-3 px-4">Chaos, Solitons and Fractals</td>
+                            <td class="py-3 px-4 text-center"><span class="px-2 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-xs">13</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-const sourceLabels = ["International Academic Journal of Science and Engineering", "Proceedings of the 18th IEEE/ACM International Conference on Utility and Cloud Computing, UCC 2025", "Machine Learning: Science and Technology", "Ocean Engineering", "Proceedings of SPIE - The International Society for Optical Engineering", "Journal of Medical Artificial Intelligence", "ICMHI 2025 - 2025 9th International Conference on Medical and Health Informatics", "Engineering Research Express", "International Journal of Advanced Computer Science and Applications", "ShodhKosh: Journal of Visual and Performing Arts"];
-const sourceValues = [6, 7, 9, 11, 11, 14, 15, 20, 27, 29];
-Plotly.newPlot('sources', [{
-  x:sourceValues, y:sourceLabels, type:'bar', orientation:'h',
-  hovertemplate:'%{y}<br>%{x} papers<extra></extra>'
-}], {margin:{t:10,b:40,l:250,r:20}, height:420,
-       xaxis:{title:'Number of publications'}, yaxis:{automargin:true}});
+    </div>
 
-const topTitles = ["Pediatric pneumonia X-ray image classification: predictive model development with DenseNet-169 transfer learning", "Human–Technology Interaction in Generative AI: A Theoretical Review of Technology Acceptance and Cognitive Response", "Reinforcement Learning-Based Predefined-Time Control for USV Trajectory Tracking under Disturbance and Input Saturation", "AI-generated versus human-created advertising: Effects on consumer trust and purchase intent", "Use of artificial intelligence to transcribe and summarise general practice consultations", "Perspectives on label-free microscopy of heterogeneous and dynamic biological systems", "Machine learning based on a swarm intelligence algorithm and explainable AI for the prediction of reservoir temperature", "Artificial Intelligence-Assisted Clinical Decision-Making: A Perspective on Advancing Personalized Precision Medicine for Elderly Diabetes Patients", "Personalized colorectal cancer risk assessment through explainable AI and Gut microbiome profiling", "Generative AI and Literacy Development in the Language Classroom: A Systematic Review of Literature"];
-const topCites = [6, 6, 7, 7, 8, 8, 8, 9, 19, 23];
-Plotly.newPlot('citation', [{
-  x:topCites, y:topTitles, type:'bar', orientation:'h',
-  hovertemplate:'%{y}<br>%{x} citations<extra></extra>'
-}], {margin:{t:10,b:50,l:520,r:30}, height:500,
-       xaxis:{title:'Citations'}, yaxis:{automargin:true}});
+    <!-- Chart Configuration Script -->
+    <script>
+        // Chart 1: Document Type
+        new Chart(document.getElementById('docTypeChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Article', 'Conference Paper'],
+                datasets: [{
+                    data: [211, 89],
+                    backgroundColor: ['#6366f1', '#38bdf8']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
 
-const kwLabels = ["Computational Aesthetics", "Education", "inteligência artificial", "Educational Technology", "Federated Learning", "Machine Learning", "inteligencia artificial", "Machine learning", "Deep Learning", "ChatGPT", "deep learning", "machine learning", "Generative AI", "Explainable AI", "Artificial Intelligence / AI"];
-const kwValues = [3, 4, 4, 4, 4, 4, 5, 6, 6, 7, 9, 11, 13, 16, 120];
-Plotly.newPlot('keywords', [{
-  x:kwValues, y:kwLabels, type:'bar', orientation:'h',
-  hovertemplate:'%{y}<br>%{x} papers<extra></extra>'
-}], {margin:{t:10,b:50,l:250,r:30}, height:520,
-       xaxis:{title:'Frequency'}, yaxis:{automargin:true}});
-</script>
+        // Chart 2: Open Access
+        new Chart(document.getElementById('accessChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Open Access', 'Closed / Subscription'],
+                datasets: [{
+                    data: [128, 172],
+                    backgroundColor: ['#10b981', '#94a3b8']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        // Chart 3: Top Sources
+        new Chart(document.getElementById('sourcesChart'), {
+            type: 'bar',
+            data: {
+                labels: ['LIPIcs', 'Nonlinear Dyn.', 'Mathematics', 'Electronics', 'ACM STOC'],
+                datasets: [{
+                    label: 'Papers Count',
+                    data: [17, 8, 5, 4, 4],
+                    backgroundColor: '#8b5cf6'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true } }
+            }
+        });
+    </script>
 </body>
 </html>
